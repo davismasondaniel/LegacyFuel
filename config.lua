@@ -1,7 +1,7 @@
 Config = {}
 
 -- Are you using ESX? Turn this to true if you would like fuel & jerry cans to cost something.
-Config.UseESX = true
+Config.UseESX = false
 
 -- What should the price of jerry cans be?
 Config.JerryCanCost = 100
@@ -14,13 +14,13 @@ Config.FuelDecor = "_FUEL_LEVEL"
 Config.DisableKeys = {0, 22, 23, 24, 29, 30, 31, 37, 44, 56, 82, 140, 166, 167, 168, 170, 288, 289, 311, 323}
 
 -- Want to use the HUD? Turn this to true.
-Config.EnableHUD = true
+Config.EnableHUD = false
 
 -- Want to use the new bar HUD? Turn this to true.
 Config.EnableBar = false
 
 -- Want the HUD to show your speed? Turn this to true.
-Config.EnableSpeedHUD = true
+Config.EnableSpeedHUD = false
 
 -- The percentage of fuel below which the HUD blinks between the below colors.
 Config.LowFuelLevel = 15
@@ -43,8 +43,8 @@ Config.HUDx = 0.01135
 Config.HUDy = 0.002
 
 -- Configure blips here. Turn both to false to disable blips all together.
-Config.ShowNearestGasStationOnly = true
-Config.ShowAllGasStations = false
+Config.ShowNearestGasStationOnly = false
+Config.ShowAllGasStations = true
 
 -- Modify the fuel-cost here, using a multiplier value. Setting the value to 2.0 would cause a doubled increase.
 Config.CostMultiplier = 1.0
@@ -82,16 +82,12 @@ Config.PumpModels = {
 
 -- Blacklist certain vehicles. Use names only. Be sure to use ` backticks and not quotes. https://wiki.gtanet.work/index.php?title=Vehicle_Models
 Config.Blacklist = {
-	--`Adder`,
-	--`dilettante`,
 }
 
 -- Blacklist entire vehicle classes. https://docs.fivem.net/natives/?_0x29439776AAA00A62
 Config.ClassBlacklist = {
 	13, -- Cycles
-	--14, -- Boats
-	--15, -- Helicopters
-	--16, -- Planes
+	14, -- Boats
 	21, -- Trains
 }
 
@@ -99,7 +95,7 @@ Config.ClassBlacklist = {
 Config.RemoveHUDForBlacklistedVehicle = true
 
 -- Fuel usage multiplier. Lower numbers make vehicles consume less fuel.
-Config.FuelUsage = 1.0
+Config.FuelUsage = 1.2
 
 -- The rate at which fuel flows (divided by 10) from the pump or jerry can every second.
 Config.RefuelRate = 1.0
@@ -135,5 +131,6 @@ Config.GasStations = {
 	vector3(176.631, -1562.025, 29.263),
 	vector3(176.631, -1562.025, 29.263),
 	vector3(-319.292, -1471.715, 30.549),
-	vector3(1784.324, 3330.55, 41.253)
+	vector3(1784.324, 3330.55, 41.253),
+	vector3(357.0750, 5371.1548, 670.8790)
 }
