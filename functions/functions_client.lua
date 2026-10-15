@@ -1,43 +1,30 @@
+local blacklistModels = {}
+local blacklistClasses = {}
+
+for i = 1, #Config.Blacklist do blacklistModels[Config.Blacklist[i]] = true end
+for i = 1, #Config.ClassBlacklist do blacklistClasses[Config.ClassBlacklist[i]] = true end
+
+function IsBlacklisted(vehicle)
+	return blacklistModels[GetEntityModel(vehicle)] or blacklistClasses[GetVehicleClass(vehicle)] or false
+end
+
 function GetFuel(vehicle)
 	return DecorGetFloat(vehicle, Config.FuelDecor)
 end
 
 function SetFuel(vehicle, fuel)
 	if type(fuel) == 'number' then
-		fuel = math.max(0, math.min(100, fuel))
-		DecorSetFloat(vehicle, Config.FuelDecor, fuel + 0.0)
+		DecorSetFloat(vehicle, Config.FuelDecor, math.max(0, math.min(100, fuel)) + 0.0)
 	end
 end
 
-function LoadAnimDict(dict)
-	if not HasAnimDictLoaded(dict) then
-		RequestAnimDict(dict)
-
-		while not HasAnimDictLoaded(dict) do
-			Citizen.Wait(1)
-		end
-	end
-end
-
-function DrawText3Ds(x, y, z, text)
-	local onScreen,_x,_y=World3dToScreen2d(x,y,z)
-
-	if onScreen then
-		SetTextScale(0.35, 0.35)
-		SetTextFont(4)
-		SetTextProportional(1)
-		SetTextColour(255, 255, 255, 215)
-		SetTextEntry("STRING")
-		SetTextCentre(1)
-		AddTextComponentString(text)
-		DrawText(_x,_y)
-	end
-end
-
-function Round(num, numDecimalPlaces)
-	local mult = 10^(numDecimalPlaces or 0)
-
+function Round(num, places)
+	local mult = 10 ^ (places or 0)
 	return math.floor(num * mult + 0.5) / mult
+end
+
+function lerp(a, b, v)
+	return a + (b - a) * v
 end
 
 function CreateBlip(coords)
@@ -56,63 +43,20 @@ function CreateBlip(coords)
 	return blip
 end
 
-function FindNearestFuelPump()
-	local coords = GetEntityCoords(PlayerPedId())
-	local fuelPumps = {}
-	local handle, object = FindFirstObject()
-	local success
-
-	repeat
-		if Config.PumpModels[GetEntityModel(object)] then
-			table.insert(fuelPumps, object)
-		end
-
-		success, object = FindNextObject(handle, object)
-	until not success
-
-	EndFindObject(handle)
-
-	local pumpObject = 0
-	local pumpDistance = 1000
-
-	for _, fuelPumpObject in pairs(fuelPumps) do
-		local dstcheck = #(coords - GetEntityCoords(fuelPumpObject))
-
-		if dstcheck < pumpDistance then
-			pumpDistance = dstcheck
-			pumpObject = fuelPumpObject
-		end
-	end
-
-	return pumpObject, pumpDistance
-end
-
-function TableContains(table, item)
-	for _, value in pairs(table) do
-		if value == item then
-			return true
-		end
-	end
-	return false
-end
-
-function lerp(a, b, v)
-	return a + (b - a) * v
-end
-
 -- https://docs.fivem.net/docs/cookbook/2019/08/12/useful-snippet-getting-the-top-left-of-the-minimap-in-screen-coordinates/
 function getMinimapTop()
 	SetScriptGfxAlign(string.byte('L'), string.byte('B'))
-	local topLeftX, topLeftY = GetScriptGfxPosition(-0.0045, 0.002 + (-0.188888))
+	local x, y = GetScriptGfxPosition(-0.0045, 0.002 + (-0.188888))
 	ResetScriptGfxAlign()
-	local topRightX, topRightY = topLeftX + 0.150, topLeftY
-
-	return {topLeftX, topLeftY, topRightX, topRightY}
+	return x, y, x + 0.150, y
 end
 
-function tween(t)
-	local handle1 = _flux.to(t, 0.5, { v = 1.0 }):ease('quartout')
-	local handle2 = handle1:after(0.5, { v = 0.0 }):ease('quartout')
-	handle2:oncomplete(function() tween(t); Wait(0) end)
-	tweens = {handle1, handle2}
+function TakeControl(entity)
+	if NetworkHasControlOfEntity(entity) then return true end
+	local timeout = GetGameTimer() + 500
+	while not NetworkHasControlOfEntity(entity) and GetGameTimer() < timeout do
+		NetworkRequestControlOfEntity(entity)
+		Wait(0)
+	end
+	return NetworkHasControlOfEntity(entity)
 end

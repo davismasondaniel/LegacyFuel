@@ -1,20 +1,24 @@
 fx_version 'cerulean'
 game 'gta5'
+lua54 'yes'
 
 author 'InZidiuZ & Drift_91'
-description "Drift_91's personal fork of Legacy Fuel."
-version '2.3'
+description "Drift_91's fork of Legacy Fuel - optimised, ox_target"
+version '3.0'
 
--- What to run
+dependencies { 'ox_lib', 'ox_target' }
+
+shared_scripts {
+	'@ox_lib/init.lua',
+	'config.lua'
+}
+
 client_scripts {
-	'config.lua',
-	'functions/flux.lua',
 	'functions/functions_client.lua',
 	'source/fuel_client.lua'
 }
 
 server_scripts {
-	'config.lua',
 	'source/fuel_server.lua'
 }
 
@@ -24,6 +28,3 @@ exports {
 }
 
 provide 'LegacyFuel'
-
-lua54 'yes'
-use_experimental_fxv2_oal 'yes'
